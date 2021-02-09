@@ -1,0 +1,5 @@
+selain->palvelin: HTTP POST  https://studies.cs.helsinki.fi/exampleapp/new_note_spa
+palvelin-->selain: Status 201 created
+note over selain:
+Sivun uudelleenlatausta HTTP GET pyynnöllä sivustosta ei suoriteta kuten edellisessä versiossa
+end note
