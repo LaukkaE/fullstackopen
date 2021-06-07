@@ -3,7 +3,7 @@ import Filter from './components/Filter';
 import PersonForm from './components/PersonForm';
 import Persons from './components/Persons';
 import bookService from './services/PhoneBook';
-import { nanoid } from 'nanoid';
+// import { nanoid } from 'nanoid';
 import Notification from './components/Notification';
 import ErrorNotification from './components/ErrorNotification';
 
@@ -32,11 +32,18 @@ const App = () => {
             setPersons(response);
         });
     };
+
+    const generateId = () => {
+        const maxId =
+            persons.length > 0 ? Math.max(...persons.map((n) => n.id)) : 0;
+        return maxId + 1;
+    };
+
     const addNumber = (event) => {
         const numberObject = {
             name: newName,
-            //käytetään ID:nä npm packagea nanoid joka luo random ID:n
-            id: nanoid(),
+            //backendin kanssa vanha ID systeemi tökköili, joten käytetään samaa id:n tekijäfunktiota, kuten osa 3 backendissä
+            id: generateId(),
             number: newNumber,
         };
         if (persons.find((person) => person.name === newName)) {
@@ -62,21 +69,30 @@ const App = () => {
             setNewNumber('');
         } else {
             event.preventDefault();
-
-            bookService.create(numberObject).then((response) => {
-                setPersons(persons.concat(numberObject));
-                setNewName('');
-                setNewNumber('');
-                setNotificationMessage(`Added ${numberObject.name}`);
-                setTimeout(() => {
-                    setNotificationMessage(null);
-                }, 5000);
-            });
+            bookService
+                .create(numberObject)
+                .then((response) => {
+                    // setPersons(persons.concat(numberObject));
+                    getData();
+                    setNewName('');
+                    setNewNumber('');
+                    setNotificationMessage(`Added ${numberObject.name}`);
+                    setTimeout(() => {
+                        setNotificationMessage(null);
+                    }, 5000);
+                })
+                .catch((error) => {
+                    console.log(error.response.data);
+                    setErrorMessage(error.response.data.error);
+                    setTimeout(() => {
+                        setErrorMessage(null);
+                    }, 5000);
+                });
         }
     };
     return (
         <div>
-            <h2>Phonebook</h2>
+            <h2>PhoneBook</h2>
             <Notification message={notificationMessage} />
             <ErrorNotification errorMessage={errorMessage} />
             <Filter filter={filterName} setFilter={setFilterName} />
