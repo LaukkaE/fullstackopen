@@ -2,7 +2,7 @@ POST http://localhost:3001/api/blogs
 Content-Type: application/json
 
 {
-  "title": "Pertti Perustestaaja",
+  "title": "Pertti Perustestaajaa",
   "author": "123-456-789",
   "url": "asdd",
   "likes": "3"
