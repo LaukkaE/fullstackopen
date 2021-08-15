@@ -76,6 +76,31 @@ describe('blog post tests', () => {
     });
 });
 
+describe('test for updating or removing a blog', () => {
+    test('a single blog can be removed', async () => {
+        const blogs = await blogsInDb();
+        const idToDelete = blogs[0].id;
+
+        await api.delete(`/api/blogs/${idToDelete}`).expect(204);
+
+        const blogsAfterDelete = await blogsInDb();
+
+        expect(blogsAfterDelete).toHaveLength(blogs.length - 1);
+    });
+    test('updating the number of likes in a blog', async () => {
+        const updatedLikes = {
+            likes: 123,
+        };
+        const blogs = await blogsInDb();
+        const idToUpdate = blogs[0].id;
+
+        await api.put(`/api/blogs/${idToUpdate}`).send(updatedLikes);
+
+        const updatedBlogList = await blogsInDb();
+        expect(updatedBlogList[0].likes).toEqual(123);
+    });
+});
+
 afterAll(async () => {
     await new Promise((resolve) => setTimeout(() => resolve(), 500));
     await mongoose.connection.close();
