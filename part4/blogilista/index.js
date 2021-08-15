@@ -1,8 +1,11 @@
 const http = require('http');
 const express = require('express');
+require('express-async-errors');
 const app = express();
 const cors = require('cors');
 const config = require('./utils/config');
+const middleware = require('./utils/middlware');
+const logger = require('./utils/logger');
 const blogsRouter = require('./controllers/blogs');
 const mongoose = require('mongoose');
 
@@ -14,17 +17,23 @@ mongoose
         useUnifiedTopology: true,
     })
     .then(() => {
-        console.log('connected to MongoDB');
+        logger.info('connected to MongoDB');
     })
     .catch((error) => {
-        console.log('error connection to MongoDB:', error.message);
+        logger.error('error connection to MongoDB:', error.message);
     });
 
 app.use(cors());
 app.use(express.json());
 app.use('/api/blogs', blogsRouter);
+app.use(middleware.requestLogger);
 
 const PORT = config.PORT || 3001;
 app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`);
 });
+
+app.use(middleware.unknownEndpoint);
+app.use(middleware.errorHandler);
+
+module.exports = app;
