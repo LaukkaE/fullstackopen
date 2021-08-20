@@ -46,7 +46,8 @@ const Blog = ({ blog, user, getData }) => {
                     <br />
                     {blog.author}
                     <br />
-                    {user.username === blog.username && (
+                    {/* (typeof user.username !== 'undefined') && (typeof blog.username !== 'undefined') && */}
+                    { user.username === blog.username && (
                         <button onClick={handleRemove}>Remove</button>
                     )}
                 </div>
