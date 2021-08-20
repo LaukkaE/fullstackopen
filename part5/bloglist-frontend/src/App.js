@@ -5,6 +5,7 @@ import { Login } from './components/Login';
 import Togglable from './components/Togglable';
 import blogService from './services/blogs';
 import loginService from './services/login';
+import blogsRouter from './services/blogs';
 
 const App = () => {
     const [blogs, setBlogs] = useState([]);
@@ -40,6 +41,25 @@ const App = () => {
     const handleLogout = () => {
         window.localStorage.clear();
         setUser(null);
+    };
+
+    const handleBlogAddLike = async (blog) => {
+        const blogObject = {
+            likes: blog.likes + 1,
+        };
+        await blogsRouter.updateBlog(blog.id, blogObject);
+        // setLikes(blogObject.likes);
+        getData();
+    };
+    const handleBlogRemove = async (blog) => {
+        if (
+            window.confirm(
+                `Are you sure you want to remove blog ${blog.title} by ${blog.author}`
+            )
+        ) {
+            await blogsRouter.deleteBlog(blog.id);
+            getData();
+        }
     };
 
     const handleBlogCreate = async (newBlog) => {
@@ -99,7 +119,14 @@ const App = () => {
                 <CreateBlog handleBlogCreate={handleBlogCreate} user={user} />
             </Togglable>
             {blogs.map((blog) => (
-                <Blog key={blog.id} blog={blog} user={user} getData={getData} />
+                <Blog
+                    key={blog.id}
+                    blog={blog}
+                    user={user}
+                    getData={getData}
+                    handleAddLike={() => handleBlogAddLike(blog)}
+                    handleRemove={() => handleBlogRemove(blog)}
+                />
             ))}
         </div>
     );

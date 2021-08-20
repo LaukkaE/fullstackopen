@@ -64,13 +64,15 @@ test('clicking the like button twice fires twice', async () => {
     };
     const mockHandler = jest.fn();
 
-    const component = render(<Blog blog={blog} user={user} />);
+    const component = render(
+        <Blog blog={blog} user={user} handleAddLike={mockHandler} />
+    );
     const button = component.getByText('show');
 
     fireEvent.click(button);
 
     const likeButton = component.getByText('Like');
-    await fireEvent.click(likeButton);
-    await fireEvent.click(likeButton);
-    expect(mockHandler.mock.calls).toHaveLength(1);
+    fireEvent.click(likeButton);
+    fireEvent.click(likeButton);
+    expect(mockHandler.mock.calls).toHaveLength(2);
 });
