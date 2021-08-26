@@ -14,7 +14,10 @@ const Blog = ({ blog, user, handleAddLike, handleRemove }) => {
         <div style={blogStyle}>
             <div>
                 {blog.title} {'by'} {blog.author}{' '}
-                <button onClick={() => setVisible(!visible)}>
+                <button
+                    className="showButton"
+                    onClick={() => setVisible(!visible)}
+                >
                     {visible ? 'hide' : 'show'}
                 </button>
             </div>
@@ -22,12 +25,14 @@ const Blog = ({ blog, user, handleAddLike, handleRemove }) => {
                 <div>
                     {blog.url}
                     <br />
-                    {`likes ${blog.likes}`}{' '}
-                    <button onClick={handleAddLike}>Like</button>
-                    <br />
+                    {/* {`likes: ${blog.likes}`}{' '} */}
+                    {/* Workaround että saadaan variable helposti */}
+                    <div style={{ display: 'flex' }}>
+                        {'likes :'} <div className="likes">{blog.likes}</div>{' '}
+                        <button onClick={handleAddLike}>Like</button>
+                    </div>
                     {blog.author}
                     <br />
-                    {/* (typeof user.username !== 'undefined') && (typeof blog.username !== 'undefined') && */}
                     {user.username === blog.username && (
                         <button onClick={handleRemove}>Remove</button>
                     )}

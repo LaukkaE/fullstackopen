@@ -1,6 +1,6 @@
 import { useState } from 'react';
 
-export const CreateBlog = (props) => {
+const CreateBlog = (props) => {
     const [title, setTitle] = useState('');
     const [author, setAuthor] = useState('');
     const [url, setUrl] = useState('');
@@ -25,6 +25,7 @@ export const CreateBlog = (props) => {
             <form onSubmit={addBlog}>
                 title:{' '}
                 <input
+                    id="title"
                     type="text"
                     value={title}
                     onChange={({ target }) => setTitle(target.value)}
@@ -32,6 +33,7 @@ export const CreateBlog = (props) => {
                 <br />
                 author:{' '}
                 <input
+                    id="author"
                     type="text"
                     value={author}
                     onChange={({ target }) => setAuthor(target.value)}
@@ -39,13 +41,18 @@ export const CreateBlog = (props) => {
                 <br />
                 url:{' '}
                 <input
+                    id="url"
                     type="text"
                     value={url}
                     onChange={({ target }) => setUrl(target.value)}
                 />
                 <br />
-                <button type="submit">create</button>
+                <button id="create-blog-button" type="submit">
+                    create
+                </button>
             </form>
         </div>
     );
 };
+
+export default CreateBlog;

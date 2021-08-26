@@ -1,21 +1,7 @@
 import '@testing-library/jest-dom/extend-expect';
 import { fireEvent, render } from '@testing-library/react';
 import Blog from './Blog';
-// let component;
-// beforeEach(() => {
-//     const blog = {
-//         title: 'Testblog',
-//         author: 'Testcomponent',
-//         url: 'www.stackoverflow.com',
-//         likes: 12,
-//         username: 'tester',
-//     };
-//     const user = {
-//         username: 'tester',
-//         user: 'juuser',
-//     };
-//     component = render(<Blog blog={blog} user={user} />);
-// });
+
 test('renders content', () => {
     const blog = {
         title: 'Testblog',

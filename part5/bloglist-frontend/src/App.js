@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import Blog from './components/Blog';
-import { CreateBlog } from './components/CreateBlog';
+import CreateBlog from './components/CreateBlog';
 import { Login } from './components/Login';
 import Togglable from './components/Togglable';
 import blogService from './services/blogs';
@@ -15,10 +15,10 @@ const App = () => {
 
     const blogFormRef = useRef();
 
-    const debug = (e) => {
-        e.preventDefault();
-        console.log(blogs[0], user);
-    };
+    // const debug = (e) => {
+    //     e.preventDefault();
+    //     console.log(blogs[0], user);
+    // };
     const getData = async () => {
         const response = await blogService.getAll();
         response.sort((a, b) => b.likes - a.likes);
@@ -93,6 +93,7 @@ const App = () => {
                 JSON.stringify(user)
             );
             setUser(user);
+            blogService.setToken(user.token);
         } catch (exception) {
             setErrorMessage('wrong credentials');
             setTimeout(() => {
@@ -107,7 +108,7 @@ const App = () => {
 
     return (
         <div>
-            <button onClick={debug}>debugbutton</button>
+            {/* <button onClick={debug}>debugbutton</button> */}
             <h2>blogs</h2>
             <h1>{errorMessage}</h1>
             <h1>{message}</h1>
