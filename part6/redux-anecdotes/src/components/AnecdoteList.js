@@ -4,7 +4,6 @@ import { voteAnecdote } from '../reducers/anecdoteReducer';
 import { setNotification } from '../reducers/notificationReducer';
 
 const AnecdoteList = () => {
-    const [timer, setTimer] = useState(null);
     const [sortedAnecdotes, setSortedAnecdotes] = useState([]);
     const dispatch = useDispatch();
     const anecdotes = useSelector((state) => state.anecdotes);
@@ -15,15 +14,8 @@ const AnecdoteList = () => {
         setSortedAnecdotes(anecdotes.sort((a, b) => b.votes - a.votes));
     }, [anecdotes]);
     const handleClick = (anecdote) => {
-        clearTimeout(timer);
-        dispatch(voteAnecdote(anecdote.id));
-        dispatch(setNotification(`you voted "${anecdote.content}"`));
-        // tallennetaan timeout stateen, jossa se yliajetaan ennen timeoutin payloadin runnaamista jos kahta objectia votetaan viiden sekunnin sisään.
-        setTimer(
-            setTimeout(() => {
-                dispatch(setNotification(''));
-            }, 5000)
-        );
+        dispatch(voteAnecdote(anecdote));
+        dispatch(setNotification(`you voted "${anecdote.content}"`, 10));
     };
     return (
         <div>
