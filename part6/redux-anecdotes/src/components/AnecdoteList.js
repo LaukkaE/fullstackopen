@@ -1,27 +1,19 @@
-import { useEffect, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { connect } from 'react-redux';
 import { voteAnecdote } from '../reducers/anecdoteReducer';
 import { setNotification } from '../reducers/notificationReducer';
 
-const AnecdoteList = () => {
-    const [sortedAnecdotes, setSortedAnecdotes] = useState([]);
-    const dispatch = useDispatch();
-    const anecdotes = useSelector((state) => state.anecdotes);
-    const filter = useSelector((state) => state.filter);
-
-    //redux storen sorttaamiseen varmaan parempikin tapa kun tehdä se komponentin sisällä uuteen muuttujaan, mutta en nyt pikaisella googlauksella löytänyt hyvää tapaa.
-    useEffect(() => {
-        setSortedAnecdotes(anecdotes.sort((a, b) => b.votes - a.votes));
-    }, [anecdotes]);
+const AnecdoteList = (props) => {
     const handleClick = (anecdote) => {
-        dispatch(voteAnecdote(anecdote));
-        dispatch(setNotification(`you voted "${anecdote.content}"`, 10));
+        // dispatch(voteAnecdote(anecdote));
+        // dispatch(setNotification(`you voted "${anecdote.content}"`, 10));
+        props.voteAnecdote(anecdote);
+        props.setNotification(`you voted "${anecdote.content}"`, 10);
     };
     return (
         <div>
             <h2>Saved Anecdotes</h2>
-            {sortedAnecdotes
-                .filter((anecdote) => anecdote.content.includes(filter))
+            {props.anecdotes
+                .sort((a, b) => b.votes - a.votes)
                 .map((anecdote) => (
                     <div key={anecdote.id}>
                         <div>{anecdote.content}</div>
@@ -36,4 +28,20 @@ const AnecdoteList = () => {
         </div>
     );
 };
-export default AnecdoteList;
+const mapDispatchToProps = {
+    voteAnecdote,
+    setNotification,
+};
+const mapStateToProps = (state) => {
+    return {
+        anecdotes: state.anecdotes.filter((anecdote) =>
+            anecdote.content.includes(state.filter)
+        ),
+    };
+};
+
+const connectedAnecdoteList = connect(
+    mapStateToProps,
+    mapDispatchToProps
+)(AnecdoteList);
+export default connectedAnecdoteList;
