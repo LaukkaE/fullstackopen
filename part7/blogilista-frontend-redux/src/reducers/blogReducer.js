@@ -7,6 +7,7 @@ export const voteBlog = (blog) => {
         const newBlogObj = {
             likes: blog.likes + 1,
             id: blog.id,
+            comments: blog.comments,
         };
         const updatedBlog = await blogService.updateBlog(blog.id, newBlogObj);
         dispatch({
@@ -15,6 +16,30 @@ export const voteBlog = (blog) => {
         });
     };
 };
+
+export const addComment = (blog, comment) => {
+    return async (dispatch) => {
+        const newBlogObj = {
+            comments: [...blog.comments, comment],
+            id: blog.id,
+            likes: blog.likes,
+        };
+        const updatedBlog = await blogService.updateBlog(blog.id, newBlogObj);
+        dispatch({
+            type: 'ADD_COMMENT',
+            data: updatedBlog,
+        });
+    };
+};
+// const handleBlogAddComment = async (blog, comment) => {
+//     const newBlogObj = {
+//         comments: [...blog.comments, comment],
+//         id: blog.id,
+//     };
+//     const updatedBlog = await blogService.updateBlog(blog.id, newBlogObj);
+//     console.log(updatedBlog);
+//     // dispatch(voteBlog(blog));
+// };
 export const addBlog = (blog) => {
     return async (dispatch) => {
         try {
@@ -69,6 +94,10 @@ const blogReducer = (state = [], action) => {
                 return element.id !== action.data.id;
             });
         case 'VOTE':
+            return state.map((element) => {
+                return element.id !== action.data.id ? element : action.data;
+            });
+        case 'ADD_COMMENT':
             return state.map((element) => {
                 return element.id !== action.data.id ? element : action.data;
             });

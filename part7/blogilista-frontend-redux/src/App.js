@@ -13,18 +13,30 @@ import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 import Users from './components/Users';
 import User from './components/User';
 import Navbar from './components/Navbar';
-
+import BlogDetails from './components/BlogDetails';
+import { ThemeProvider } from '@material-ui/styles';
+import { createTheme, Typography } from '@material-ui/core';
+import './app.css';
 const App = () => {
+    const theme = createTheme({
+        palette: {
+            background: {
+                default: '#282c34',
+            },
+            type: 'dark',
+        },
+    });
     const [userList, setUserList] = useState([]);
+
+    const dispatch = useDispatch();
+    const store = useSelector((state) => state);
     useEffect(() => {
         const getUsers = async () => {
             const users = await userService.getUsers();
             setUserList(users);
         };
         getUsers();
-    }, []);
-    const dispatch = useDispatch();
-    const store = useSelector((state) => state);
+    }, [store]);
 
     const blogFormRef = useRef();
 
@@ -46,9 +58,6 @@ const App = () => {
         dispatch(userLogout());
     };
 
-    // const handleBlogAddLike = async (blog) => {
-    //     dispatch(voteBlog(blog));
-    // };
     const handleBlogRemove = async (blog) => {
         if (
             window.confirm(
@@ -69,42 +78,59 @@ const App = () => {
     };
 
     if (!store.user) {
-        return <Login handleLogin={handleLogin} />;
+        return (
+            <ThemeProvider theme={theme}>
+                <Login handleLogin={handleLogin} />{' '}
+            </ThemeProvider>
+        );
     }
 
     return (
         <Router>
             <div>
-                <Navbar handleLogout={handleLogout} />
-                <h2>blogs</h2>
-                <h1>{store.notification}</h1>
-                <Switch>
-                    <Route path="/users/:id">
-                        <User userList={userList} />
-                    </Route>
-                    <Route path="/users">
-                        <Users userList={userList} />
-                    </Route>
-                    <Route path="/">
-                        <Togglable buttonLabel="create blog" ref={blogFormRef}>
-                            <CreateBlog
-                                handleBlogCreate={handleBlogCreate}
-                                user={store.user}
-                            />
-                        </Togglable>
-                        {store.blogs
-                            .sort((a, b) => b.likes - a.likes) // Storen sorttaus runtimessä ei liene paras ratkaisu mutta toiminee, ellei datan määrä ole iso.
-                            .map((blog) => (
-                                <Blog
-                                    key={blog.id}
-                                    blog={blog}
+                <ThemeProvider theme={theme}>
+                    <Navbar handleLogout={handleLogout} />
+                    <Typography variant="h4" color="textPrimary">
+                        blog app
+                        <br />
+                        {store.notification}
+                    </Typography>
+                    <Switch>
+                        <Route path="/blogs/:id">
+                            <BlogDetails handleBlogRemove={handleBlogRemove} />
+                        </Route>
+                        <Route path="/users/:id">
+                            <User userList={userList} />
+                        </Route>
+                        <Route path="/users">
+                            <Users userList={userList} />
+                        </Route>
+                        <Route path="/">
+                            <Togglable
+                                buttonLabel="create blog"
+                                ref={blogFormRef}
+                            >
+                                <CreateBlog
+                                    handleBlogCreate={handleBlogCreate}
                                     user={store.user}
-                                    // handleAddLike={() => handleBlogAddLike(blog)}
-                                    handleRemove={() => handleBlogRemove(blog)}
                                 />
-                            ))}
-                    </Route>
-                </Switch>
+                            </Togglable>
+                            {store.blogs
+                                .sort((a, b) => b.likes - a.likes) // Storen sorttaus runtimessä ei liene paras ratkaisu mutta toiminee, ellei datan määrä ole iso.
+                                .map((blog) => (
+                                    <Blog
+                                        key={blog.id}
+                                        blog={blog}
+                                        user={store.user}
+                                        // handleAddLike={() => handleBlogAddLike(blog)}
+                                        handleRemove={() =>
+                                            handleBlogRemove(blog)
+                                        }
+                                    />
+                                ))}
+                        </Route>
+                    </Switch>
+                </ThemeProvider>
             </div>
         </Router>
     );

@@ -50,6 +50,8 @@ blogsRouter.post('/', async (request, response) => {
         url: body.url,
         user: user._id,
         username: body.username,
+        nameOfUser: body.nameOfUser,
+        comments: [],
     });
 
     const savedBlog = await blog.save();
@@ -74,12 +76,23 @@ blogsRouter.delete('/:id', async (request, response) => {
         return response.status(401).json({ error: 'Unauthorized action' });
     }
 });
+// blogsRouter.post('/:id/comments', async (request, response) => {
+//     const body = request.body;
+//     const blog = {
+//         comments: [...comments, body.comment],
+//     };
+//     const updatedBlog = await Blog.findByIdAndUpdate(request.params.id, blog, {
+//         new: true,
+//     });
+//     response.json(updatedBlog.toJSON());
+// });
 
 blogsRouter.put('/:id', async (request, response, next) => {
     const body = request.body;
 
     const blog = {
         likes: body.likes,
+        comments: body.comments,
     };
 
     const updatedBlog = await Blog.findByIdAndUpdate(request.params.id, blog, {

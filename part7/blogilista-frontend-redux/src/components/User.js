@@ -1,5 +1,6 @@
 import React from 'react';
 import { useParams } from 'react-router';
+import { Typography } from '@material-ui/core';
 
 const User = ({ userList }) => {
     const id = useParams().id;
@@ -10,12 +11,22 @@ const User = ({ userList }) => {
     }
     return (
         <div>
-            <h2>{user.name}</h2>
-            <h3>Added blogs</h3>
+            <Typography
+                style={{ marginTop: '5px' }}
+                variant="h5"
+                color="textPrimary"
+            >
+                {user.name}
+            </Typography>
+            <Typography variant="h6" color="textPrimary">
+                Added Blogs
+            </Typography>
             <ul>
-                {user.blogs.map((blog) => {
-                    return <li key={blog.id}>{blog.title}</li>;
-                })}
+                <Typography color="textPrimary">
+                    {user.blogs.map((blog) => {
+                        return <li key={blog.id}>{blog.title}</li>;
+                    })}
+                </Typography>
             </ul>
         </div>
     );

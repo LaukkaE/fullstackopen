@@ -1,4 +1,5 @@
-import { Link } from 'react-router-dom';
+import { Link as BrowserLink } from 'react-router-dom';
+import { Typography, Link } from '@material-ui/core';
 
 const Users = ({ userList }) => {
     if (!userList) {
@@ -7,14 +8,33 @@ const Users = ({ userList }) => {
 
     return (
         <div>
-            <h1>Users</h1>
-            <h3>blogs created</h3>
+            <Typography
+                variant="h4"
+                color="textPrimary"
+                style={{ marginTop: '10px' }}
+            >
+                Users
+            </Typography>
+            <Typography
+                variant="h5"
+                color="textPrimary"
+                style={{ marginBottom: '10px' }}
+            >
+                blogs created
+            </Typography>
             {userList.map((user) => {
                 return (
-                    <div key={user.id}>
-                        <Link to={`/users/${user.id}`}>{user.name}</Link>{' '}
-                        {user.blogs.length}
-                    </div>
+                    <Typography color="textPrimary" key={user.id}>
+                        <Link
+                            component={BrowserLink}
+                            style={{ textDecoration: 'none' }}
+                            color="secondary"
+                            to={`/users/${user.id}`}
+                        >
+                            {user.name}
+                        </Link>{' '}
+                        {user.blogs.length} blogs
+                    </Typography>
                 );
             })}
         </div>

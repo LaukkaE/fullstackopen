@@ -1,9 +1,8 @@
-import { useState } from 'react';
-import { useDispatch } from 'react-redux';
-import { voteBlog } from '../reducers/blogReducer';
-const Blog = ({ blog, user, handleRemove }) => {
-    const dispatch = useDispatch();
-    const [visible, setVisible] = useState(false);
+// import { useState } from 'react';
+import { Link as RouterLink } from 'react-router-dom';
+import { Box, Link, Typography } from '@material-ui/core';
+const Blog = ({ blog }) => {
+    // const [visible, setVisible] = useState(false);
     // const [likes, setLikes] = useState(blog.likes);
     const blogStyle = {
         paddingTop: 10,
@@ -11,38 +10,22 @@ const Blog = ({ blog, user, handleRemove }) => {
         border: 'solid',
         borderWidth: 1,
         marginBottom: 5,
+        color: '#d04',
     };
 
     return (
-        <div style={blogStyle}>
-            <div>
-                {blog.title} {'by'} {blog.author}{' '}
-                <button
-                    className="showButton"
-                    onClick={() => setVisible(!visible)}
+        <div>
+            <Box style={blogStyle}>
+                <Link
+                    style={{ textDecoration: 'none' }}
+                    component={RouterLink}
+                    to={`/blogs/${blog.id}`}
                 >
-                    {visible ? 'hide' : 'show'}
-                </button>
-            </div>
-            {visible && (
-                <div>
-                    {blog.url}
-                    <br />
-                    {/* {`likes: ${blog.likes}`}{' '} */}
-                    {/* Workaround että saadaan variable helposti testatessa */}
-                    <div style={{ display: 'flex' }}>
-                        {'likes :'} <div className="likes">{blog.likes}</div>{' '}
-                        <button onClick={() => dispatch(voteBlog(blog))}>
-                            Like
-                        </button>
-                    </div>
-                    {blog.author}
-                    <br />
-                    {user.username === blog.username && (
-                        <button onClick={handleRemove}>Remove</button>
-                    )}
-                </div>
-            )}
+                    <Typography color="textPrimary">
+                        {`${blog.title} by ${blog.author}`}
+                    </Typography>
+                </Link>
+            </Box>
         </div>
     );
 };
