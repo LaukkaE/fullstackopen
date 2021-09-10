@@ -100,13 +100,13 @@ const BlogDetails = ({ handleBlogRemove }) => {
                     add comment
                 </Button>
             </Box>
-            <Typography color="textPrimary">
-                <ul>
+            <ul>
+                <Typography color="textPrimary">
                     {blog.comments.map((comment, index) => {
                         return <li key={index}>{comment}</li>;
                     })}
-                </ul>
-            </Typography>
+                </Typography>
+            </ul>
         </div>
     );
 };
