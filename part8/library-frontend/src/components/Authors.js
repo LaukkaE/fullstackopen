@@ -11,7 +11,7 @@ const Authors = (props) => {
     const [changeBirthYear] = useMutation(EDIT_AUTHOR, {
         refetchQueries: [{ query: GET_AUTHORS }],
         onError: (error) => {
-            console.log(error.graphQLErrors[0].message);
+            props.setError(error.graphQLErrors[0].message);
         },
     });
 
@@ -39,10 +39,6 @@ const Authors = (props) => {
 
     return (
         <div>
-            <button onClick={() => console.log(result.data.allAuthors)}>
-                debug
-            </button>
-            <button onClick={() => console.log(selectedOption)}>debug2</button>
             <h2>authors</h2>
             <table>
                 <tbody>
@@ -60,26 +56,33 @@ const Authors = (props) => {
                     ))}
                 </tbody>
             </table>
-            <h2>Set birthyear</h2>
-            <div>
-                <Select
-                    defaultValue={selectedOption}
-                    onChange={setSelectedOption}
-                    options={authors}
-                />
-                born
-                <input
-                    type="number"
-                    onChange={({ target }) =>
-                        setBirthYear(parseInt(target.value))
-                    }
-                    value={birthYear}
-                />
-                <br />
-                <button disabled={!birthYear} onClick={handleBirthYearUpdate}>
-                    update author
-                </button>
-            </div>
+            {props.token && (
+                <>
+                    <h2>Set birthyear</h2>
+                    <div>
+                        <Select
+                            defaultValue={selectedOption}
+                            onChange={setSelectedOption}
+                            options={authors}
+                        />
+                        born
+                        <input
+                            type="number"
+                            onChange={({ target }) =>
+                                setBirthYear(parseInt(target.value))
+                            }
+                            value={birthYear}
+                        />
+                        <br />
+                        <button
+                            disabled={!birthYear}
+                            onClick={handleBirthYearUpdate}
+                        >
+                            update author
+                        </button>
+                    </div>{' '}
+                </>
+            )}
         </div>
     );
 };

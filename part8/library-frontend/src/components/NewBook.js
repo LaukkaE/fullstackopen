@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useMutation } from '@apollo/client';
-import { ADD_BOOK, GET_AUTHORS, GET_BOOKS } from '../utils/queries';
+import { ADD_BOOK, GET_AUTHORS, GET_BOOKS, GET_GENRES } from '../utils/queries';
 
 const NewBook = (props) => {
     const [title, setTitle] = useState('');
@@ -9,17 +9,26 @@ const NewBook = (props) => {
     const [genre, setGenre] = useState('');
     const [genres, setGenres] = useState([]);
 
-    // const [addBook] = useMutation(ADD_BOOK, {
-    //     // refetchQueries: [{ query: ALL_PERSONS }],
-    //     onError: (error) => {
-    //         console.log(error.graphQLErrors[0].message);
-    //         // setError(error.graphQLErrors[0].message);
-    //     },
-    // });
     const [addBook] = useMutation(ADD_BOOK, {
-        refetchQueries: [{ query: GET_AUTHORS }, { query: GET_BOOKS }],
+        refetchQueries: [
+            { query: GET_AUTHORS },
+            { query: GET_BOOKS },
+            { query: GET_GENRES },
+        ],
         onError: (error) => {
-            console.log(error.graphQLErrors[0].message);
+            props.setError(error.graphQLErrors[0].message);
+            // console.log(error.graphQLErrors[0].message);
+            console.log('adding a book failed');
+        },
+        update: (store, response) => {
+            const dataInStore = store.readQuery({ query: GET_BOOKS });
+            store.writeQuery({
+                query: GET_BOOKS,
+                data: {
+                    ...dataInStore,
+                    allBooks: [...dataInStore.allBooks, response.data.addBook],
+                },
+            });
         },
     });
     if (!props.show) {
