@@ -1,5 +1,28 @@
 import { gql } from '@apollo/client';
 
+//Laitetaan nyt tämä subscription fragmentin alle niinkuin mallissa vaikka tämä ei oikein tällaisenaan koodia säästäkkään
+const BOOK_DETAILS = gql`
+    fragment BookDetails on Book {
+        title
+        published
+        genres
+        author {
+            name
+            born
+        }
+    }
+`;
+
+export const BOOK_ADDED = gql`
+    subscription {
+        bookAdded {
+            ...BookDetails
+        }
+    }
+
+    ${BOOK_DETAILS}
+`;
+
 export const GET_AUTHORS = gql`
     query {
         allAuthors {

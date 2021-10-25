@@ -1,10 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Authors from './components/Authors';
 import Books from './components/Books';
 import Login from './components/Login';
 import NewBook from './components/NewBook';
-import { useApolloClient } from '@apollo/client';
+import { useApolloClient, useSubscription } from '@apollo/client';
 import Recommend from './components/Recommend';
+import { BOOK_ADDED, GET_BOOKS } from './utils/queries';
 
 const App = () => {
     const [page, setPage] = useState('authors');
@@ -18,11 +19,42 @@ const App = () => {
             setErrorMessage(null);
         }, 5000);
     };
+    const updateCacheWith = (addedBook) => {
+        console.log('updatecachewith');
+        const includedIn = (set, object) =>
+            set.map((p) => p.id).includes(object.id);
+
+        const dataInStore = client.readQuery({ query: GET_BOOKS });
+        if (!includedIn(dataInStore.allBooks, addedBook)) {
+            client.writeQuery({
+                query: GET_BOOKS,
+                data: {
+                    allBooks: dataInStore.allBooks.concat(addedBook),
+                },
+            });
+        }
+    };
+
+    useEffect(() => {
+        const savedToken = window.localStorage.getItem('booklibrary-token');
+        if (savedToken) setToken(savedToken);
+    }, []);
+
+    useSubscription(BOOK_ADDED, {
+        onSubscriptionData: ({ subscriptionData }) => {
+            const addedBook = subscriptionData.data.bookAdded;
+
+            window.alert(`${addedBook.title} added`);
+
+            updateCacheWith(addedBook);
+        },
+    });
 
     const logout = () => {
         setToken(null);
         localStorage.clear();
         client.resetStore();
+        setPage('authors');
     };
 
     return (
@@ -54,7 +86,7 @@ const App = () => {
 
             <NewBook show={page === 'add'} setError={setError} />
 
-            <Recommend show={page === 'recommend'} />
+            {token && <Recommend show={page === 'recommend'} token={token} />}
 
             <Login
                 show={page === 'login'}

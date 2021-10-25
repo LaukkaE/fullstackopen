@@ -11,6 +11,9 @@ const Book = require('./models/book');
 const User = require('./models/user');
 const jwt = require('jsonwebtoken');
 
+const { PubSub } = require('apollo-server');
+const pubsub = new PubSub();
+
 const JWT_SECRET = process.env.SECRET;
 
 mongoose
@@ -69,6 +72,10 @@ const typeDefs = gql`
         createUser(username: String!, favoriteGenre: String!): User
         login(username: String!, password: String!): Token
     }
+
+    type Subscription {
+        bookAdded: Book!
+    }
 `;
 
 const resolvers = {
@@ -95,6 +102,7 @@ const resolvers = {
             return authorsBooks;
         },
         allAuthors: async () => {
+            // n+1 ongelmaan en käytännössä tehnyt mitään, koska en suorittanut alunperinkään bookCount kohtaa erillisellä queryllä, vaan etsimällä booklistasta authorin nimellä olevat kirjat, ja laskemalla ne.
             const authors = await Author.find({});
             const books = await Book.find({}).populate('author');
             return authors.map((author) => {
@@ -134,7 +142,10 @@ const resolvers = {
             }
             try {
                 const newBook = new Book({ ...args, author: author });
-                newBook.save();
+                await newBook.save();
+
+                pubsub.publish('BOOK_ADDED', { bookAdded: newBook });
+
                 return newBook;
             } catch (error) {
                 throw new UserInputError(error.message, { invalidArgs: args });
@@ -183,6 +194,11 @@ const resolvers = {
             return { value: jwt.sign(userForToken, JWT_SECRET) };
         },
     },
+    Subscription: {
+        bookAdded: {
+            subscribe: () => pubsub.asyncIterator(['BOOK_ADDED']),
+        },
+    },
 };
 
 const server = new ApolloServer({
@@ -198,6 +214,7 @@ const server = new ApolloServer({
     },
 });
 
-server.listen().then(({ url }) => {
+server.listen().then(({ url, subscriptionsUrl }) => {
     console.log(`Server ready at ${url}`);
+    console.log(`Subscriptions ready at ${subscriptionsUrl}`);
 });

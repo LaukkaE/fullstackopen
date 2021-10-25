@@ -6,7 +6,9 @@ const Books = (props) => {
     const [genreList, setGenreList] = useState([]);
     const [selectedGenre, setSelectedGenre] = useState('all genres');
     // const result = useQuery(GET_BOOKS);
-    const [getBooks, { loading, data }] = useLazyQuery(GET_BOOKS);
+    const [getBooks, { loading, data }] = useLazyQuery(GET_BOOKS, {
+        // fetchPolicy: 'no-cache',
+    });
     //eslint-disable-next-line
     const genres = useQuery(GET_GENRES, {
         onCompleted: ({ allBooks }) => {
