@@ -8,6 +8,17 @@ router.get('/', (_req, res) => {
     res.send(patientService.getNonSensitiveEntries());
 });
 
+// router.get('/:id', (req, res) => {
+//     const foundPatient = patientService.getPatientInfo(req.params.id);
+//     if (!foundPatient) res.send({ error: 'Patient not found' });
+//     res.send(foundPatient);
+// });
+router.get('/:id', (req, res) => {
+    const foundPatient = patientService.getAllPatientInfo(req.params.id);
+    if (!foundPatient) res.send({ error: 'Patient not found' });
+    res.send(foundPatient);
+});
+
 router.post('/', (req, res) => {
     try {
         // eslint-disable-next-line @typescript-eslint/no-unsafe-argument

@@ -1,4 +1,5 @@
-import patientsData from '../../data/patients.json';
+import { PublicPatient } from './../types';
+import patientsData from '../../data/patients';
 import { v4 as uuid } from 'uuid';
 
 import {
@@ -11,6 +12,21 @@ const patients: Array<PatientEntry> = patientsData;
 
 const getEntries = () => {
     return patients;
+};
+const getAllPatientInfo = (id: string): PatientEntry | undefined => {
+    const foundPatient = patients.find((patient) => patient.id === id);
+    if (!foundPatient) return undefined;
+
+    return foundPatient;
+};
+
+const getPatientInfo = (id: string): PublicPatient | undefined => {
+    const foundPatient = patients.find((patient) => patient.id === id);
+    if (!foundPatient) return undefined;
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { ssn, entries, ...modifiedPatient } = foundPatient;
+
+    return modifiedPatient;
 };
 
 const getNonSensitiveEntries = (): NonSensitivePatientEntry[] => {
@@ -38,4 +54,6 @@ export default {
     getEntries,
     addEntry,
     getNonSensitiveEntries,
+    getPatientInfo,
+    getAllPatientInfo,
 };
