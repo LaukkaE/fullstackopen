@@ -21,7 +21,7 @@ export interface Patient {
 }
 
 interface BaseEntry {
-    id: string;
+    id?: string;
     description: string;
     date: string;
     specialist: string;
@@ -41,19 +41,19 @@ export interface Discharge {
     criteria: string;
     date: string;
 }
-interface HealthCheckEntry extends BaseEntry {
+export interface HealthCheckEntry extends BaseEntry {
     type: 'HealthCheck';
     healthCheckRating: HealthCheckRating;
 }
 
-interface HospitalEntry extends BaseEntry {
+export interface HospitalEntry extends BaseEntry {
     type: 'Hospital';
     discharge?: Discharge;
     sickLeave?: SickLeave;
 }
-interface OccupationalHealthcareEntry extends BaseEntry {
+export interface OccupationalHealthcareEntry extends BaseEntry {
     type: 'OccupationalHealthcare';
-    employerName: string;
+    employerName: string | undefined;
     sickLeave?: SickLeave;
 }
 
