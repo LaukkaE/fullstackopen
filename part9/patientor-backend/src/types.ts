@@ -53,7 +53,7 @@ export type Entry =
     | HealthCheckEntry;
 
 export interface PatientEntry {
-    id: string;
+    id?: string;
     name: string;
     dateOfBirth: string;
     ssn: string;

@@ -1,4 +1,6 @@
+import { Entry } from './../types';
 import express from 'express';
+import { Request, Response } from 'express';
 
 const router = express.Router();
 import toNewPatientEntry from '../utils';
@@ -32,5 +34,22 @@ router.post('/', (req, res) => {
         res.status(400).send(e.message);
     }
 });
+
+router.post(
+    '/:id/entries',
+    (req: Request<{ id: string }, never, Entry>, res: Response) => {
+        try {
+            const modifiedPatient = patientService.addPatientEntry(
+                req.params.id,
+                req.body
+            );
+            res.json(modifiedPatient);
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        } catch (e: any) {
+            console.log(e.message);
+            res.status(400).send(e.message);
+        }
+    }
+);
 
 export default router;

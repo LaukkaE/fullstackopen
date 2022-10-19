@@ -75,4 +75,22 @@ const toNewPatientEntry = ({
     return newEntry;
 };
 
+// type EntryFields = {
+//     id?: unknown;
+//     dateOfBirth: unknown;
+//     ssn: unknown;
+//     gender: unknown;
+//     occupation: unknown;
+// };
+
+// export interface PatientEntry {
+//     id?: string;
+//     name: string;
+//     dateOfBirth: string;
+//     ssn: string;
+//     gender: string;
+//     occupation: string;
+//     entries?: Entry[];
+// }
+
 export default toNewPatientEntry;

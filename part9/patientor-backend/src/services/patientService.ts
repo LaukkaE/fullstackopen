@@ -1,4 +1,4 @@
-import { PublicPatient } from './../types';
+import { PublicPatient, Entry } from './../types';
 import patientsData from '../../data/patients';
 import { v4 as uuid } from 'uuid';
 
@@ -50,7 +50,25 @@ const addEntry = (entry: newPatientEntry): PatientEntry => {
     return newPatient;
 };
 
+const addPatientEntry = (
+    patientId: string,
+    entry: Entry
+): PatientEntry | void => {
+    const foundIndex = patients.findIndex(
+        (patient) => patient.id === patientId
+    );
+    if (foundIndex === -1) {
+        throw new Error('patient not found');
+    }
+    patients[foundIndex]?.entries?.push({
+        ...entry,
+    });
+
+    return patients[foundIndex];
+};
+
 export default {
+    addPatientEntry,
     getEntries,
     addEntry,
     getNonSensitiveEntries,
